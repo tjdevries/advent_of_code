@@ -28,8 +28,20 @@ func ReadLines(path string) ([]string, error) {
 func sumInt(x, y int) int { return x + y }
 func mulInt(x, y int) int { return x * y }
 
+func sum(x []int) int {
+	total := 0
+	for _, item := range x {
+		total += item
+	}
+
+	return total
+}
+
+// In the future, use this instead:
+// result, err
 func FindAddersRecursive(targetValue int, currentItems []int, items []int, remaining_adders int) (bool, []int) {
-	currentSum := fp.ReduceInt(sumInt, currentItems)
+	// currentSum := fp.ReduceInt(sumInt, currentItems)
+	currentSum := sum(currentItems)
 
 	if remaining_adders == 1 {
 		for _, item := range items {
@@ -48,11 +60,14 @@ func FindAddersRecursive(targetValue int, currentItems []int, items []int, remai
 	}
 
 	return false, nil
-
 }
 
 func FindAdders(targetValue int, items []int, adder_count int) (bool, []int) {
 	for index, item := range items {
+		// [1, 2, 3, 4]
+		//  1 + 2, 1 + 3, 1 + 4
+		//         2 + 3, 2 + 4
+		//                3 + 4
 		found, resulting_items := FindAddersRecursive(targetValue, []int{item}, items[index+1:], adder_count-1)
 		if found {
 			return true, resulting_items
@@ -109,4 +124,7 @@ func main() {
 
 	DisplayAdders(targetValue, testValues, 3)
 	DisplayAdders(targetValue, lines, 3)
+
+	DisplayAdders(targetValue, lines, 4)
+	DisplayAdders(targetValue, lines, 5)
 }
