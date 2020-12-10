@@ -13,3 +13,9 @@
 
 When I'm writing go routines and I think "TJ, You race conditions probably deadlocks can't async write things"
 then I should try and do something like `go run -race my_thing.go`.
+
+
+	// make([]int, 0, len(numbers)) which would make len() return 0
+	// so append would put the first item at index 0,
+	// but the underlying array is preallocated to the correct size
+	// contiguousSums := make([]int, 0, len(numbers))
