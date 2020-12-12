@@ -129,8 +129,9 @@ type Direction struct {
 
 var count int = 0
 
-// 3, 3 -> 0, 1
-//
+// 3, 3 -> 0,1
+// 3, 4 -> 0,1
+// 3, 5 -> 0,1
 func GetNextVisibleSeat(x, y int, d Direction, rows []string) rune {
 	new_x, new_y := x, y
 	for {
