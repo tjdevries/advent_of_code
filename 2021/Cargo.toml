@@ -1,0 +1,13 @@
+[package]
+name = "aoc2021"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "day1"
+path = "src/day1.rs"
+
+[dependencies]
+itertools = "0.10.1"
