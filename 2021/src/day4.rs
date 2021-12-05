@@ -2,7 +2,7 @@ use std::{collections::HashSet, str::Lines};
 
 use itertools::Itertools;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Board {
     sets: Vec<HashSet<i32>>,
 }
@@ -75,12 +75,30 @@ fn main() {
         boards.push(board)
     }
 
-    for m in &moves {
-        for board in boards.iter_mut() {
+    let mut first_boards = boards.clone();
+    'moves: for m in &moves {
+        for board in first_boards.iter_mut() {
             if board.turn(*m) {
-                println!("Result: {}", m * board.remaining_sum());
-                return;
+                println!("Part 1: {}", m * board.remaining_sum());
+                break 'moves;
             }
         }
     }
+
+    let mut last_result = 0;
+    for m in &moves {
+        let mut to_remove = Vec::new();
+        for (idx, board) in boards.iter_mut().enumerate() {
+            if board.turn(*m) {
+                last_result = m * board.remaining_sum();
+                to_remove.push(idx);
+            }
+        }
+
+        for idx in to_remove.iter().rev() {
+            boards.remove(*idx);
+        }
+    }
+
+    println!("Last Winner: {:?}", last_result);
 }
