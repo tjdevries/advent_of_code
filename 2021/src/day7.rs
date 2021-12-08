@@ -102,5 +102,7 @@ fn main() -> Result<()> {
     // }
     // println!("{:?}", cheapest.unwrap());
 
+    // Also, you can use median for part 1 and mean for part 2 to help you out a lot
+
     Ok(())
 }
