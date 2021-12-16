@@ -1,87 +1,99 @@
+use std::str::FromStr;
+
+use anyhow::Result;
+
 #[derive(Debug)]
 enum Direction {
-    Forward(usize),
-    Down(usize),
-    Up(usize),
+    Forward(u64),
+    Down(u64),
+    Up(u64),
+}
+
+impl FromStr for Direction {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        if let Some((direction, distance)) = s.split_once(" ") {
+            let distance = distance.parse()?;
+
+            Ok(match direction {
+                "forward" => Direction::Forward(distance),
+                "down" => Direction::Down(distance),
+                "up" => Direction::Up(distance),
+                _ => panic!("Unhandled direction"),
+            })
+        } else {
+            Err(anyhow::format_err!("could not split direction"))
+        }
+    }
 }
 
 #[derive(Debug)]
 struct Location {
-    horizontal: usize,
-    depth: usize,
-    aim: usize,
+    distance: u64,
+    depth: u64,
+    aim: u64,
 }
 
 impl Location {
     fn new() -> Location {
         return Location {
-            horizontal: 0,
+            distance: 0,
             depth: 0,
             aim: 0,
         };
     }
 
-    fn result(self) -> usize {
-        self.horizontal * self.depth
+    fn answer(self) -> u64 {
+        self.distance * self.depth
     }
 }
 
-fn parse_line(line: &str) -> Option<Direction> {
-    if let Some(parts) = line.split_once(" ") {
-        let distance = parts.1.parse().unwrap();
+fn main() -> Result<()> {
+    let filename = "./data/2.input";
 
-        Some(match parts.0 {
-            "forward" => Direction::Forward(distance),
-            "down" => Direction::Down(distance),
-            "up" => Direction::Up(distance),
-            _ => panic!("Unhandled direction"),
-        })
-    } else {
-        None
-    }
-}
+    println!(
+        "Part 1: {:?}",
+        aoc::read_one_per_line::<Direction>(filename)?
+            .iter()
+            .fold(Location::new(), |loc, dir| match dir {
+                Direction::Forward(distance) => Location {
+                    distance: loc.distance + distance,
+                    ..loc
+                },
+                Direction::Down(depth) => Location {
+                    depth: loc.depth + depth,
+                    ..loc
+                },
+                Direction::Up(depth) => Location {
+                    depth: loc.depth - depth,
+                    ..loc
+                },
+            })
+            .answer()
+    );
 
-fn main() {
-    let part_1 = include_str!("../data/2.input")
-        .split("\n")
-        .filter_map(parse_line)
-        .fold(Location::new(), |loc, dir| match dir {
-            Direction::Forward(distance) => Location {
-                horizontal: loc.horizontal + distance,
-                ..loc
-            },
-            Direction::Down(depth) => Location {
-                depth: loc.depth + depth,
-                ..loc
-            },
-            Direction::Up(depth) => Location {
-                depth: loc.depth - depth,
-                ..loc
-            },
-        })
-        .result();
+    println!(
+        "Part 2: {:?}",
+        aoc::read_one_per_line::<Direction>(filename)?
+            .iter()
+            .fold(Location::new(), |loc, dir| match dir {
+                Direction::Forward(distance) => Location {
+                    distance: loc.distance + distance,
+                    depth: loc.depth + distance * loc.aim,
+                    ..loc
+                },
+                Direction::Down(depth) => Location {
+                    aim: loc.aim + depth,
+                    ..loc
+                },
+                Direction::Up(depth) => Location {
+                    aim: loc.aim - depth,
+                    ..loc
+                },
+            })
+            .answer()
+    );
 
-    println!("{:?}", part_1);
-
-    let part_2 = include_str!("../data/2.input")
-        .split("\n")
-        .filter_map(parse_line)
-        .fold(Location::new(), |loc, dir| match dir {
-            Direction::Forward(distance) => Location {
-                horizontal: loc.horizontal + distance,
-                depth: loc.depth + distance * loc.aim,
-                ..loc
-            },
-            Direction::Down(depth) => Location {
-                aim: loc.aim + depth,
-                ..loc
-            },
-            Direction::Up(depth) => Location {
-                aim: loc.aim - depth,
-                ..loc
-            },
-        })
-        .result();
-
-    println!("{:?}", part_2);
+    Ok(())
 }
