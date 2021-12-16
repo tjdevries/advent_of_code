@@ -32,6 +32,8 @@ impl FromStr for Direction {
 struct Location {
     distance: u64,
     depth: u64,
+
+    // Part 2, can ignore for part 1
     aim: u64,
 }
 
