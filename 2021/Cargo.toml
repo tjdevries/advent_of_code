@@ -10,6 +10,10 @@ path = "src/lib.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [[bin]]
+name = "day15"
+path = "src/day15.rs"
+
+[[bin]]
 name = "day12"
 path = "src/day12.rs"
 

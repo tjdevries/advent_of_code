@@ -63,7 +63,6 @@ fn main() -> Result<()> {
         include_str!("../data/8.input")
             .lines()
             .fold(0, |acc, line| {
-                // let line = puzzle.next().unwrap();
                 let items = line
                     .split(" | ")
                     .map(|p| p.split_whitespace())

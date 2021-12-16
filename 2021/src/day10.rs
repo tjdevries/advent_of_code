@@ -45,21 +45,21 @@ fn main() {
             })
     );
 
+    let mut opener = HashMap::new();
+    opener.insert('[', ']');
+    opener.insert('(', ')');
+    opener.insert('{', '}');
+    opener.insert('<', '>');
+
+    let mut closer = HashMap::new();
+    closer.insert(']', '[');
+    closer.insert(')', '(');
+    closer.insert('}', '{');
+    closer.insert('>', '<');
+
     let scores = include_str!("../data/10.input")
         .lines()
         .filter_map(|line| {
-            let mut opener = HashMap::new();
-            opener.insert('[', ']');
-            opener.insert('(', ')');
-            opener.insert('{', '}');
-            opener.insert('<', '>');
-
-            let mut closer = HashMap::new();
-            closer.insert(']', '[');
-            closer.insert(')', '(');
-            closer.insert('}', '{');
-            closer.insert('>', '<');
-
             let mut stack = Vec::new();
             for c in line.chars() {
                 if opener.contains_key(&c) {
