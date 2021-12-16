@@ -1,39 +1,31 @@
 use std::collections::VecDeque;
 
 use anyhow::Result;
-use itertools::Itertools;
 
-// TODO: If I want to come back and be really clever,
-// it seems like it should be possible to just calculate this, rather than
-// simulate it... not 100% sure though.
-//
-// fn calculate(start: u32) -> u32 {}
+fn main() -> Result<()> {
+    let puzzle = aoc::read_one_line("./data/6.input", ",")?;
 
-fn get_counts(puzzle: &Vec<usize>, days: u32) -> VecDeque<u64> {
+    println!("Part 1: {:?}", get_counts(&puzzle, 80));
+    println!("Part 2: {:?}", get_counts(&puzzle, 256));
+
+    Ok(())
+}
+
+fn get_counts(puzzle: &Vec<usize>, days: u32) -> u64 {
+    // [0, 0, 0, 0, 0, 0, 0, 0, 0]
     let mut counts = VecDeque::from(vec![0; 9]);
+
+    // Add initial condition
+    // [5, 2, 1, 0, 0, 3, 0, 0, 0]
     puzzle.iter().for_each(|i| counts[*i] += 1);
 
-    for _ in 0..days {
+    // Run simulation
+    (0..days).for_each(|_| {
         let new_babies = counts.pop_front().unwrap();
         counts[6] += new_babies;
         counts.push_back(new_babies);
-    }
+    });
 
-    counts
-}
-
-fn main() -> Result<()> {
-    let puzzle = include_str!("../data/6.input")
-        .trim()
-        .split(",")
-        .map(|c| c.parse::<usize>().unwrap())
-        .collect_vec();
-
-    let counts = get_counts(&puzzle, 80);
-    println!("{:?}", counts.iter().sum::<u64>());
-
-    let counts = get_counts(&puzzle, 256);
-    println!("{:?}", counts.iter().sum::<u64>());
-
-    Ok(())
+    // Sum
+    counts.iter().sum()
 }

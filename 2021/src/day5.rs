@@ -1,5 +1,4 @@
 use anyhow::Result;
-use itertools::Itertools;
 use std::{collections::HashMap, ops::RangeInclusive, str::FromStr};
 
 #[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
@@ -69,12 +68,11 @@ fn get_dangerous_counts(lines: &Vec<Line>, diagonal: bool) -> u32 {
 
     counts
         .iter()
-        .fold(0, |acc, count| acc + if count.1 > &1 { 1 } else { 0 })
+        .fold(0, |acc, (_, &count)| acc + if count > 1 { 1 } else { 0 })
 }
 
 fn main() -> Result<()> {
-    let puzzle = include_str!("../data/5.input");
-    let lines: Vec<Line> = puzzle.lines().map(|l| l.parse().unwrap()).collect();
+    let lines = aoc::read_one_per_line("./data/5.input")?;
 
     println!("{:?}", get_dangerous_counts(&lines, false));
     println!("{:?}", get_dangerous_counts(&lines, true));

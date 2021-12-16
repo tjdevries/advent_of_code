@@ -18,6 +18,11 @@ impl Board {
             panic!("Dude, surely you messed something up");
         }
 
+        // [
+        //  [7, 13, 22, 2, 1],
+        //  [3, 5, 10, 9, 8],
+        //  ...
+        // ]
         let rows: Vec<Vec<i32>> = lines
             .take(5)
             .map(|l| l.split_whitespace().map(|m| m.parse().unwrap()).collect())

@@ -21,3 +21,14 @@ where
         .map(|line| line.chars().map(|c| f(c).unwrap()).collect())
         .collect())
 }
+
+pub fn read_one_line<T>(path: &str, sep: &str) -> Result<Vec<T>>
+where
+    T: FromStr,
+{
+    Ok(std::fs::read_to_string(path)?
+        .trim()
+        .split(sep)
+        .filter_map(|c| c.parse::<T>().ok())
+        .collect())
+}
