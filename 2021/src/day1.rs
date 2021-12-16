@@ -1,25 +1,22 @@
-fn main() {
-    let part1 = include_str!("day1.input")
-        .split("\n")
-        .filter_map(|line| line.parse::<usize>().ok())
-        .collect::<Vec<usize>>()
+use anyhow::Result;
+use itertools::Itertools;
+
+fn main() -> Result<()> {
+    let part1 = aoc::read_one_per_line::<u32>("./data/1.input")?
         .windows(2)
-        .fold(0, |acc, win| if win[0] < win[1] { acc + 1 } else { acc });
+        .filter(|win| win[0] < win[1])
+        .collect_vec()
+        .len();
 
     println!("Part 1: {}", part1);
 
-    let part2 = include_str!("day1.input")
-        .split("\n")
-        .filter_map(|line| line.parse::<usize>().ok())
-        .collect::<Vec<usize>>()
+    let part2 = aoc::read_one_per_line::<u32>("./data/1.input")?
         .windows(4)
-        .fold(0, |acc, win| {
-            if win[0..3].iter().sum::<usize>() < win[1..4].iter().sum::<usize>() {
-                acc + 1
-            } else {
-                acc
-            }
-        });
+        .filter(|win| win[0] < win[3])
+        .collect_vec()
+        .len();
 
     println!("Part 2: {:?}", part2);
+
+    Ok(())
 }
