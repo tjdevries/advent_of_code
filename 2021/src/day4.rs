@@ -4,6 +4,7 @@ use itertools::Itertools;
 
 #[derive(Debug, Clone)]
 struct Board {
+    /// List of sets of winning combinations.
     sets: Vec<HashSet<i32>>,
 }
 
@@ -22,10 +23,7 @@ impl Board {
             .map(|l| l.split_whitespace().map(|m| m.parse().unwrap()).collect())
             .collect_vec();
 
-        for row in &rows {
-            sets.push(HashSet::from_iter(row.iter().cloned()));
-        }
-
+        // Column-wise
         for col in 0..5 {
             let mut set = HashSet::new();
             for row in 0..5 {
@@ -34,6 +32,13 @@ impl Board {
 
             sets.push(set);
         }
+
+        // Row-wise
+        for row in rows {
+            sets.push(HashSet::from_iter(row));
+        }
+
+        // No diagonals in this mode
 
         Some(Board { sets })
     }
@@ -46,23 +51,27 @@ impl Board {
             }
         }
 
-        return complete;
+        complete
     }
 
     fn remaining_sum(&self) -> i32 {
-        let mut remaining = HashSet::new();
+        HashSet::<&i32>::from_iter(self.sets.iter().flatten())
+            .into_iter()
+            .sum()
 
-        for s in self.sets.iter() {
-            remaining.extend(s.iter());
-        }
-
-        remaining.iter().sum()
+        // // Alternatively:
+        // let mut remaining = HashSet::new();
+        //
+        // for s in self.sets.iter() {
+        //     remaining.extend(s);
+        // }
+        //
+        // remaining.iter().sum()
     }
 }
 
 fn main() {
-    let puzzle = include_str!("../data/4.input");
-    let mut lines = puzzle.lines();
+    let mut lines = include_str!("../data/4.input").lines();
     let moves = lines
         .next()
         .unwrap()
@@ -75,30 +84,38 @@ fn main() {
         boards.push(board)
     }
 
-    let mut first_boards = boards.clone();
-    'moves: for m in &moves {
-        for board in first_boards.iter_mut() {
-            if board.turn(*m) {
-                println!("Part 1: {}", m * board.remaining_sum());
-                break 'moves;
+    // Part 1
+    {
+        let mut boards = boards.clone();
+        'moves: for m in &moves {
+            for board in boards.iter_mut() {
+                if board.turn(*m) {
+                    println!("Part 1: {}", m * board.remaining_sum());
+                    break 'moves;
+                }
             }
         }
     }
 
-    let mut last_result = 0;
-    for m in &moves {
-        let mut to_remove = Vec::new();
-        for (idx, board) in boards.iter_mut().enumerate() {
-            if board.turn(*m) {
-                last_result = m * board.remaining_sum();
-                to_remove.push(idx);
+    // Part 2
+    {
+        let mut last_result = 0;
+        for m in &moves {
+            let mut to_remove = Vec::new();
+            for (idx, board) in boards.iter_mut().enumerate() {
+                if board.turn(*m) {
+                    last_result = m * board.remaining_sum();
+                    to_remove.push(idx);
+                }
+            }
+
+            // Remove boards that are complete.
+            // Iterate back-to-front for indexes to be correct
+            for idx in to_remove.iter().rev() {
+                boards.remove(*idx);
             }
         }
 
-        for idx in to_remove.iter().rev() {
-            boards.remove(*idx);
-        }
+        println!("Part 2: {:?}", last_result);
     }
-
-    println!("Last Winner: {:?}", last_result);
 }

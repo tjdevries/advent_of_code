@@ -9,6 +9,10 @@ fn main() -> Result<()> {
     let digits = lines[0].len();
     let half = lines.len() as u32 / 2;
 
+    // 00100
+    // 10101
+    //
+    // 1 0 2 0 1
     let mut sums = vec![0; digits];
     lines.iter().for_each(|line| {
         for i in 0..digits {
@@ -16,7 +20,7 @@ fn main() -> Result<()> {
         }
     });
 
-    let part_1: u32 = sums
+    let gamma: u32 = sums
         .into_iter()
         // if the count is greater than half of the numbers,
         // then it's the most common, so put a 1
@@ -24,10 +28,15 @@ fn main() -> Result<()> {
         // shift and add
         .fold(0, |res, digit| (res << 1) + digit);
 
-    println!("{:?}", part_1 * (!part_1 << size - digits >> size - digits));
+    println!("{:?}", gamma * (!gamma << size - digits >> size - digits));
 
     // Part 2
     let filter_vals = |f: fn(u32, u32) -> bool| {
+        // [
+        //  [ 1, 0, 1, 1, 1 ],
+        //  [ 1, 0, 0, 0, 0 ],
+        //  ...
+        // ]
         let mut values = lines.clone();
         for idx in 0..digits {
             let line_values = values.iter().map(|digits| digits[idx]).collect_vec();
