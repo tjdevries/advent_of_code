@@ -2,7 +2,7 @@ use anyhow::Result;
 use itertools::Itertools;
 
 fn main() -> Result<()> {
-    let puzzle = include_str!("../data/7.input")
+    let puzzle = include_str!("../../data/7.input")
         .trim()
         .split(",")
         .map(|c| c.parse::<i32>().unwrap())

@@ -5,7 +5,7 @@ use itertools::Itertools;
 fn main() {
     println!(
         "Part 1: {}",
-        include_str!("../data/10.input")
+        include_str!("../../data/10.input")
             .lines()
             .fold(0, |acc, line| {
                 let opener = vec!['[', '(', '{', '<'];
@@ -57,7 +57,7 @@ fn main() {
     closer.insert('}', '{');
     closer.insert('>', '<');
 
-    let scores = include_str!("../data/10.input")
+    let scores = include_str!("../../data/10.input")
         .lines()
         .filter_map(|line| {
             let mut stack = Vec::new();

@@ -76,7 +76,7 @@ impl Board {
 }
 
 fn main() {
-    let mut lines = include_str!("../data/4.input").lines();
+    let mut lines = include_str!("../../data/4.input").lines();
     let moves = lines
         .next()
         .unwrap()

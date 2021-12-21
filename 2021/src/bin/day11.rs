@@ -59,7 +59,7 @@ fn flash(state: &mut Vec<Vec<u32>>, flashed: &mut HashSet<(i32, i32)>, x: i32, y
 }
 
 fn main() {
-    let mut state = include_str!("../data/11.input")
+    let mut state = include_str!("../../data/11.input")
         .lines()
         .map(|l| l.chars().map(|c| c.to_digit(10).unwrap()).collect_vec())
         .collect_vec();
@@ -69,7 +69,7 @@ fn main() {
         (0..100).fold(0, |acc, _| acc + step(&mut state))
     );
 
-    let mut state = include_str!("../data/11.input")
+    let mut state = include_str!("../../data/11.input")
         .lines()
         .map(|l| l.chars().map(|c| c.to_digit(10).unwrap()).collect_vec())
         .collect_vec();

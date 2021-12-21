@@ -33,7 +33,7 @@ impl FromStr for Fold {
 }
 
 fn main() -> Result<()> {
-    let mut puzzle = include_str!("../data/13.input").lines();
+    let mut puzzle = include_str!("../../data/13.input").lines();
     let mut dots = HashSet::<(i32, i32)>::new();
     while let Some(line) = puzzle.next() {
         if line.is_empty() {

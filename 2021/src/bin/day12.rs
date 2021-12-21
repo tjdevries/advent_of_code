@@ -98,7 +98,7 @@ fn find_path(
 fn main() {
     let mut nodes = HashMap::new();
 
-    let _ = include_str!("../data/12.input")
+    let _ = include_str!("../../data/12.input")
         .lines()
         .map(|l| l.split_once("-").unwrap())
         .for_each(|(left, right)| {

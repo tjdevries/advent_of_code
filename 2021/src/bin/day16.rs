@@ -222,12 +222,12 @@ fn part_2(s: &str) -> Result<u64> {
 fn main() -> Result<()> {
     println!(
         "Part 1 (821) {:?}",
-        part_1(include_str!("../data/16.input").trim())?
+        part_1(include_str!("../../data/16.input").trim())?
     );
 
     println!(
         "Part 2 {}",
-        part_2(include_str!("../data/16.input").trim())?
+        part_2(include_str!("../../data/16.input").trim())?
     );
 
     Ok(())

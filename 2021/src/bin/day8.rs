@@ -33,7 +33,7 @@ macro_rules! seg_set {
 fn main() -> Result<()> {
     println!(
         "Part 1: {}",
-        include_str!("../data/8.input")
+        include_str!("../../data/8.input")
             .lines()
             .map(|l| l.split_once(" | ").unwrap().1)
             .flat_map(|output| output.split_whitespace().collect_vec())
@@ -60,7 +60,7 @@ fn main() -> Result<()> {
 
     println!(
         "Part 2: {}",
-        include_str!("../data/8.input")
+        include_str!("../../data/8.input")
             .lines()
             .fold(0, |acc, line| {
                 let items = line

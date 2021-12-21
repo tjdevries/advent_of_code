@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use itertools::Itertools;
 
 fn main() {
-    let puzzle = include_str!("../data/9.input")
+    let puzzle = include_str!("../../data/9.input")
         .lines()
         .map(|l| l.chars().map(|c| c.to_digit(10).unwrap()).collect_vec())
         .collect_vec();

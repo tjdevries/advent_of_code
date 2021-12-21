@@ -35,7 +35,7 @@ impl Rates {
 }
 
 fn main() {
-    let part_1 = include_str!("../data/3.example")
+    let part_1 = include_str!("../../data/3.example")
         .lines()
         .map(|f| f.parse::<Line>().unwrap())
         .fold(
