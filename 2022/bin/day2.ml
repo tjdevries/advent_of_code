@@ -18,21 +18,22 @@ let row s =
     | _ -> 3
   in
   let result =
-    match (theirs, ours) with
+    match theirs, ours with
     | "X", "Y"
     | "Y", "Z"
     | "Z", "X" ->
-        6
+      6
     | ours, theirs when ours = theirs -> 3
     | _ -> 0
   in
-
   played + result
+;;
 
 let rec score problem reducer acc =
   match problem with
   | [] -> acc
   | hd :: tail -> score tail reducer (reducer hd + acc)
+;;
 
 (* Part 1  *)
 let () = print_endline "Part 1"
@@ -43,16 +44,10 @@ let () = score result row 0 |> string_of_int |> print_endline
 (* Rock A *)
 (* Paper B *)
 (* Scissors C *)
-let win = List.to_seq [ ("A", "B"); ("B", "C"); ("C", "A") ] |> StringMap.of_seq
-
-let lose =
-  List.to_seq [ ("A", "C"); ("B", "A"); ("C", "B") ] |> StringMap.of_seq
-
-let played_points =
-  List.to_seq [ ("A", 1); ("B", 2); ("C", 3) ] |> StringMap.of_seq
-
-let result_points =
-  List.to_seq [ ("X", 0); ("Y", 3); ("Z", 6) ] |> StringMap.of_seq
+let win = List.to_seq [ "A", "B"; "B", "C"; "C", "A" ] |> StringMap.of_seq
+let lose = List.to_seq [ "A", "C"; "B", "A"; "C", "B" ] |> StringMap.of_seq
+let played_points = List.to_seq [ "A", 1; "B", 2; "C", 3 ] |> StringMap.of_seq
+let result_points = List.to_seq [ "X", 0; "Y", 3; "Z", 6 ] |> StringMap.of_seq
 
 let part2 s =
   let theirs = String.sub s 0 1 in
@@ -63,25 +58,30 @@ let part2 s =
     | "Y" -> theirs
     | _ -> StringMap.find theirs win
   in
-
   StringMap.find outcome result_points + StringMap.find our_move played_points
+;;
 
 let () = print_endline "Part 2"
 let () = score result part2 0 |> string_of_int |> print_endline
 
 module RPS = struct
-  type t = Rock | Paper | Scissors
+  type t =
+    | Rock
+    | Paper
+    | Scissors
 
   let of_string = function
     | "A" -> Rock
     | "B" -> Paper
     | "C" -> Scissors
     | _ -> assert false
+  ;;
 
   let to_string = function
     | Rock -> "A"
     | Paper -> "B"
     | Scissors -> "C"
+  ;;
 
   let compare a b = compare (to_string a) (to_string b)
 end
@@ -89,25 +89,20 @@ end
 module RPSMap = Map.Make (RPS)
 
 let win =
-  List.to_seq
-    [
-      (RPS.Rock, RPS.Paper); (RPS.Paper, RPS.Scissors); (RPS.Scissors, RPS.Rock);
-    ]
+  List.to_seq [ RPS.Rock, RPS.Paper; RPS.Paper, RPS.Scissors; RPS.Scissors, RPS.Rock ]
   |> RPSMap.of_seq
+;;
 
 let lose =
-  List.to_seq
-    [
-      (RPS.Rock, RPS.Scissors); (RPS.Paper, RPS.Rock); (RPS.Scissors, RPS.Paper);
-    ]
+  List.to_seq [ RPS.Rock, RPS.Scissors; RPS.Paper, RPS.Rock; RPS.Scissors, RPS.Paper ]
   |> RPSMap.of_seq
+;;
 
 let played_points =
-  List.to_seq [ (RPS.Rock, 1); (RPS.Paper, 2); (RPS.Scissors, 3) ]
-  |> RPSMap.of_seq
+  List.to_seq [ RPS.Rock, 1; RPS.Paper, 2; RPS.Scissors, 3 ] |> RPSMap.of_seq
+;;
 
-let result_points =
-  List.to_seq [ ("X", 0); ("Y", 3); ("Z", 6) ] |> StringMap.of_seq
+let result_points = List.to_seq [ "X", 0; "Y", 3; "Z", 6 ] |> StringMap.of_seq
 
 (* let conv s = match s with *)
 (*     | "X" -> Rock *)
@@ -124,8 +119,8 @@ let part2 s =
     | "Z" -> RPSMap.find theirs win
     | _ -> assert false
   in
-
   StringMap.find outcome result_points + RPSMap.find our_move played_points
+;;
 
 let () = print_endline "Part 2"
 let () = score result part2 0 |> string_of_int |> print_endline

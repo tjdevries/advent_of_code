@@ -1,10 +1,34 @@
 version = 0.23.0
+profile=janestreet
 
 # Forces cases to always be on different lines.
 break-cases=all
 break-separators=after
-#
-# break-sequences=true
+break-sequences = true
+break-fun-decl = smart
+break-infix = fit-or-vertical
+break-string-literals = never
+cases-exp-indent = 2
+disambiguate-non-breaking-match = true
+doc-comments = before
+exp-grouping = preserve
+field-space = tight-decl
+leading-nested-match-parens = true
 
-# nested-match=align
-# single-case=sparse
+
+# I could go either way on this...
+parens-tuple = always
+parens-tuple-patterns = always
+
+sequence-blank-line = preserve-one
+sequence-style = terminator
+space-around-lists = false
+space-around-records = true
+space-around-variants = true
+type-decl = sparse
+wrap-fun-args = false
+
+if-then-else = k-r
+indicate-nested-or-patterns = space
+
+dock-collection-brackets = true
