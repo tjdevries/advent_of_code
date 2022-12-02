@@ -1,0 +1,10 @@
+version = 0.23.0
+
+# Forces cases to always be on different lines.
+break-cases=all
+break-separators=after
+#
+# break-sequences=true
+
+# nested-match=align
+# single-case=sparse
