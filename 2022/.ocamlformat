@@ -17,8 +17,8 @@ leading-nested-match-parens = true
 
 
 # I could go either way on this...
-parens-tuple = always
-parens-tuple-patterns = always
+parens-tuple = multi-line-only
+parens-tuple-patterns = multi-line-only
 
 sequence-blank-line = preserve-one
 sequence-style = terminator

@@ -1,0 +1,74 @@
+No worries! I reconstructed it from memory with the link omitted so hopefully this goes through. Please let me know if you have any question. Original Message:
+
+A few notes from someone who recently had/got to write a cross-compiler in OCaml:
+
+1. A slightly more idiomatic way to write the third arm of the outer match in your 'group' function is to write something like:
+
+| cals :: rest ->
+    let new_result = match result with
+                                  | [] -> [ int_of_string cals ]
+                                  | hd :: tail -> (hd + int_of_string cals) :: tail) in
+    group rest new_result
+
+(Note the in at the end of the second to last line, also some parens might be needed around the nested match still but I omitted them for clarity)
+By doing this you have separated the calculation and the passing of the value of new_result. This is cleaner and better aligns with Ocaml's rpgramming guideline "Naming complex arguments" (details on OCaml site > docs > guidelines).
+
+2. Often you'll run into the situation where a recursive function always needs a certain value to be passed in on it's inital call. The best way to handle this is to wrap the function in question in a new function which calls the old function with the default arugments applied. For example your 'group' function would be rewritten:
+
+let group input =
+    let rec group_helper input result =
+        (* original code for group *)
+    in
+    group_helper input []
+
+(* then later just write *)
+group some_input
+
+This has two main advantages. The first is that if down the line you were to change the implementation of group to need a different default value (other than []) you would only need to change it in this one spot instead of every line of your code where you called group. The second advantage is that it hides this input from the public api, meaning that someone can't inadvertently call it with the wrong value.
+
+Note that points (1) and (2) would be even more impactful for your 'max3' function as that has an even larger match statement being passed as an argument and has three arguments with default values instead of 1.
+
+3. A more idiomatic way to write the 'max_of_list' function would be:
+
+let max_of_list input = List.fold_left (fun a x -> max a x) 0 input
+
+Here 'fold_left' is taking three parameters: the first is an anonymous function which takes the accumulated value (a) and value in the list we are currently looking at (x) and return the greater of the two; the second is the initial value for the accumulator (0 in this case because all values are positive); and the list to fold (input).
+
+4. Instead of writing `let () = print...` it is preferred to write `let _ = print...`. While print calls (in general calls to any function executed solely for it's side effects) do return the unit value (denoted ()), writing an underscore is preferred as it makes clear you wish to disregard the value.
+
+Finally just noting that your implementation of 'max3' would be even faster than you might think because (as far as I know) List.sort is not tail-recursive and so spends time managing the stack, whereas your code is tail-recursive and so will get compiled into a very fast loop.
+
+
+
+_____
+
+
+If you wanted to rely more on list operations, a solution like this comes to mind, which approach is better is probably a matter of preference but this one does avoid the need for the nested match by initially partitioning the input into a list of lists (where each list represents an elf's snack stash). It also does the int conversions after the fact to cleanup the code of 'find_groups' a bit (but again, preference). It also causes a compiler warning on the line where we deconstruct out as we don't cover the case where out = [], but we know this case can't occur.
+
+let find_groups list =
+    let rec helper list out =
+        match list with
+        | []       -> out
+        | "" :: tl -> helper tl ([] :: out)
+        | hd :: tl -> (
+            let out_hd :: out_tl = out in
+            helper tl ((hd :: out_hd) :: out_tl)
+        ) in
+    helper list [[]]
+
+let max_of_list list = List.fold_left (fun a x -> max a x) 0 list
+
+(* input is a list of the lines in the input file *)
+
+let answer =
+    let groups = find_groups input in
+    let int_groups = List.map (List.map int_of_string) groups in
+    let sums = List.map (List.fold_left (+) 0) int_groups in
+    max_of_list sums
+
+(* or alternatively, you could combine the type conversions with the summation like so. I prefer the former for cleanness if you aren't trying to optimize (not sure if the compiler can do this level of optimization) *)
+
+let answer =
+    let groups = find_groups input in
+    let sums = List.map (List.fold_left (fun a x -> a + (int_of_string x)) 0) groups in
+    max_of_list sums
