@@ -2,15 +2,7 @@ let result = Advent.read_lines "day3.txt"
 
 module CharSet = Set.Make (Char)
 
-let to_char_set str =
-  let rec exp index acc =
-    if index < 0 then
-      acc
-    else
-      exp (index - 1) (CharSet.add str.[index] acc)
-  in
-  exp (String.length str - 1) CharSet.empty
-;;
+let to_char_set str = String.to_seq str |> CharSet.of_seq
 
 let score_char c =
   let code = Char.code c in
@@ -27,8 +19,6 @@ let score_part1 acc row =
   let c = CharSet.inter left right |> CharSet.choose in
   acc + score_char c
 ;;
-
-let _ = List.fold_left score_part1 0 result |> print_int
 
 let part2 rows =
   let score a b c =
@@ -49,18 +39,8 @@ let part2 rows =
   fold_left3 score rows 0
 ;;
 
-let _ = print_string "\npart 2\n"
+let _ = print_string "Part 1\n"
+let _ = List.fold_left score_part1 0 result |> print_int
+let _ = print_string "\nPart 2\n"
 let _ = part2 result |> print_int
-
-(* let split input delim_char = *)
-(*   let rec split input curr_word past_words = *)
-(*     match input with *)
-(*     | [] -> curr_word :: past_words *)
-(*     | c :: rest -> *)
-(*       if c = delim_char then *)
-(*         split rest [] (curr_word :: past_words) *)
-(*       else *)
-(*         split rest (c :: curr_word) past_words *)
-(*   in *)
-(*   split input [] [] *)
-(* ;; *)
+let _ = print_newline ()

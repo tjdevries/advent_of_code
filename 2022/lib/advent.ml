@@ -28,3 +28,8 @@ let print_listof_chars chars =
        Format.pp_print_char)
     chars
 ;;
+
+let split_once ch str =
+  let[@ocaml.warning "-8"] [left; right] = String.split_on_char ch str in
+  left, right
+;;
