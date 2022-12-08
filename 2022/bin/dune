@@ -1,4 +1,4 @@
 (executables
- (public_names advent day1 day2 day3 day4 day5 day6)
- (names main day1 day2 day3 day4 day5 day6)
+ (public_names advent day1 day2 day3 day4 day5 day6 day7)
+ (names main day1 day2 day3 day4 day5 day6 day7)
  (libraries advent str base))
