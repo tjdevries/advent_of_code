@@ -80,17 +80,16 @@ let get_leaves input =
   (* Base.Option.apply *)
   let ( >>| ) = Base.Option.( >>| ) in
 
-  let get_ls_lines lines =
-    let rec helper lines acc =
-      match lines with
-      | [] -> lines, acc
-      | hd :: _ when String.starts_with ~prefix:"$" hd -> lines, acc
-      | hd :: tail -> helper tail (LsLine.of_string hd :: acc)
-    in
-    helper lines []
-  in
-
   let do_ls _ lines folder leaves =
+    let get_ls_lines lines =
+      let rec helper lines acc =
+        match lines with
+        | [] -> lines, acc
+        | hd :: _ when String.starts_with ~prefix:"$" hd -> lines, acc
+        | hd :: tail -> helper tail (LsLine.of_string hd :: acc)
+      in
+      helper lines []
+    in
     let lines, ls = get_ls_lines lines in
     Folder.process_ls folder ls;
     let is_leaf = List.for_all LsLine.is_file ls in
