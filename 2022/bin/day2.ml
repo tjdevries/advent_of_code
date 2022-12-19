@@ -2,13 +2,13 @@ let result = Advent.read_lines "day2.txt"
 
 module StringMap = Map.Make (String)
 
-let score problem reducer =
-  let rec score_helper problem reducer acc =
+let score problem scorer =
+  let rec score_helper problem scorer acc =
     match problem with
     | [] -> acc
-    | hd :: tail -> score_helper tail reducer (reducer hd + acc)
+    | hd :: tail -> score_helper tail scorer (scorer hd + acc)
   in
-  score_helper problem reducer 0
+  score_helper problem scorer 0
 ;;
 
 (* Part 1  *)
@@ -19,14 +19,16 @@ let part1 s =
     match String.sub s 0 1 with
     | "A" -> "X"
     | "B" -> "Y"
-    | _ -> "Z"
+    | "C" -> "Z"
+    | _ -> assert false
   in
   let ours = String.sub s 2 1 in
   let played =
     match ours with
     | "X" -> 1
     | "Y" -> 2
-    | _ -> 3
+    | "Z" -> 3
+    | _ -> assert false
   in
   let result =
     match theirs, ours with
@@ -34,52 +36,15 @@ let part1 s =
      |"Y", "Z"
      |"Z", "X" ->
       6
-    | ours, theirs when ours = theirs -> 3
+    | theirs, ours when theirs = ours -> 3
     | _ -> 0
   in
   played + result
 ;;
 
-let () = print_endline "Part 1"
-let () = score result part1 |> string_of_int |> print_endline
-
-(* Part 2 *)
-
-(* Rock A *)
-(* Paper B *)
-(* Scissors C *)
-
-(* Turn a list of pairs into a map *)
-let str_map l = List.to_seq l |> StringMap.of_seq
-let win = str_map ["A", "B"; "B", "C"; "C", "A"]
-let lose = str_map ["A", "C"; "B", "A"; "C", "B"]
-let played_points = str_map ["A", 1; "B", 2; "C", 3]
-let result_points = str_map ["X", 0; "Y", 3; "Z", 6]
-
-let part2 s =
-  let theirs = String.sub s 0 1 in
-  let outcome = String.sub s 2 1 in
-  let our_move =
-    match outcome with
-    | "X" -> StringMap.find theirs lose
-    | "Y" -> theirs
-    | _ -> StringMap.find theirs win
-  in
-  StringMap.find outcome result_points + StringMap.find our_move played_points
-;;
-
-let () = print_endline "Part 2"
-let () = score result part2 |> string_of_int |> print_endline
+let () = Format.sprintf "Part 1: %d" (score result part1) |> print_endline
 
 (* Part 2: Better Solution *)
-
-let identity a = a
-
-let hd l =
-  match l with
-  | [] -> None
-  | hd :: _ -> Some hd
-;;
 
 module RPS = struct
   type t =
@@ -94,18 +59,27 @@ module RPS = struct
     | _ -> assert false
   ;;
 
-  let to_string = function
-    | Rock -> "A"
-    | Paper -> "B"
-    | Scissors -> "C"
+  let get_lose mv =
+    match mv with
+    | Rock -> Scissors
+    | Paper -> Rock
+    | Scissors -> Paper
   ;;
 
-  let compare a b = compare (to_string a) (to_string b)
+  let get_win mv =
+    match mv with
+    | Rock -> Paper
+    | Paper -> Scissors
+    | Scissors -> Rock
+  ;;
+
+  let points mv =
+    match mv with
+    | Rock -> 1
+    | Paper -> 2
+    | Scissors -> 3
+  ;;
 end
-
-module RPSMap = Map.Make (RPS)
-
-let rps_map s = List.to_seq s |> RPSMap.of_seq
 
 module Action = struct
   type t =
@@ -114,44 +88,30 @@ module Action = struct
     | Win
 
   let of_string = function
-    | "X" -> Ok Loss
-    | "Y" -> Ok Draw
-    | "Z" -> Ok Win
-    | _ -> Error "Unknown"
+    | "X" -> Loss
+    | "Y" -> Draw
+    | "Z" -> Win
+    | _ -> assert false
   ;;
 
-  let to_string = function
-    | Loss -> "X"
-    | Draw -> "Y"
-    | Win -> "Z"
+  let points mv =
+    match mv with
+    | Loss -> 0
+    | Draw -> 3
+    | Win -> 6
   ;;
-
-  let compare a b = compare (to_string a) (to_string b)
 end
 
-module ActionMap = Map.Make (Action)
-
-let action_map s = List.to_seq s |> ActionMap.of_seq
-
-(* Maps for doing what move we need to do *)
-let lose = rps_map [RPS.Rock, RPS.Scissors; RPS.Paper, RPS.Rock; RPS.Scissors, RPS.Paper]
-let win = rps_map [RPS.Rock, RPS.Paper; RPS.Paper, RPS.Scissors; RPS.Scissors, RPS.Rock]
-
-(* Maps for points *)
-let played_points = rps_map [RPS.Rock, 1; RPS.Paper, 2; RPS.Scissors, 3]
-let result_points = action_map [Action.Loss, 0; Action.Draw, 3; Action.Win, 6]
-
-let typed_part2 s =
+let part2 s =
   let theirs = String.sub s 0 1 |> RPS.of_string in
-  let outcome = String.sub s 2 1 |> Action.of_string |> Result.get_ok in
+  let outcome = String.sub s 2 1 |> Action.of_string in
   let our_move =
     match outcome with
-    | Loss -> RPSMap.find theirs lose
+    | Loss -> RPS.get_lose theirs
     | Draw -> theirs
-    | Win -> RPSMap.find theirs win
+    | Win -> RPS.get_win theirs
   in
-  ActionMap.find outcome result_points + RPSMap.find our_move played_points
+  Action.points outcome + RPS.points our_move
 ;;
 
-let () = print_endline "Part 2"
-let () = score result typed_part2 |> string_of_int |> print_endline
+let () = Format.sprintf "Part 2: %d" (score result part2) |> print_endline

@@ -1,9 +1,5 @@
 let result = Advent.read_lines "day3.txt"
 
-module CharSet = Set.Make (Char)
-
-let to_char_set str = String.to_seq str |> CharSet.of_seq
-
 let score_char c =
   let code = Char.code c in
   match c with
@@ -12,19 +8,23 @@ let score_char c =
   | _ -> assert false
 ;;
 
+module CharSet = Set.Make (Char)
+
+let to_charset str = String.to_seq str |> CharSet.of_seq
+
 let score_part1 acc row =
   let length = String.length row in
-  let left = String.sub row 0 (length / 2) |> to_char_set in
-  let right = String.sub row (length / 2) (length / 2) |> to_char_set in
+  let left = String.sub row 0 (length / 2) |> to_charset in
+  let right = String.sub row (length / 2) (length / 2) |> to_charset in
   let c = CharSet.inter left right |> CharSet.choose in
   acc + score_char c
 ;;
 
 let part2 rows =
   let score a b c =
-    let a = to_char_set a in
-    let b = to_char_set b in
-    let c = to_char_set c in
+    let a = to_charset a in
+    let b = to_charset b in
+    let c = to_charset c in
     let badge = CharSet.inter a b |> CharSet.inter c |> CharSet.choose in
     score_char badge
   in
