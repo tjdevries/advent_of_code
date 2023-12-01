@@ -33,7 +33,7 @@ let cases =
   ]
 ;;
 
-let map_to_number str pos =
+let map_to_digit str pos =
   List.find_map cases ~f:(fun (substr, value) ->
     match String.substr_index ~pos str ~pattern:substr with
     | Some matched when matched = pos -> Some value
@@ -41,7 +41,7 @@ let map_to_number str pos =
 ;;
 
 let str_to_numbers str =
-  let map_to_number = map_to_number str in
+  let map_to_number = map_to_digit str in
   List.range 0 (String.length str) |> List.filter_map ~f:map_to_number
 ;;
 
@@ -58,14 +58,14 @@ let () =
 ;;
 
 let first_match str =
-  let map_to_number = map_to_number str in
+  let map_to_number = map_to_digit str in
   List.range 0 (String.length str)
   |> List.find_map ~f:map_to_number
   |> Option.value_exn
 ;;
 
 let last_match str =
-  let map_to_number = map_to_number str in
+  let map_to_number = map_to_digit str in
   List.range ~stride:(-1) ~stop:`inclusive (String.length str) 0
   |> List.find_map ~f:map_to_number
   |> Option.value_exn
