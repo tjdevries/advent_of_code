@@ -1,4 +1,4 @@
-(executable
- (public_name day01)
- (name day01)
- (libraries advent fmt))
+(executables
+ (public_names day01 day02)
+ (names day01 day02)
+ (libraries advent fmt re))
