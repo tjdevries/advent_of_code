@@ -14,3 +14,6 @@ let print_listof_strs ints =
        Format.pp_print_string)
     ints
 ;;
+
+let directions = [ 0, 1; 1, 1; 1, 0; 1, -1; 0, -1; -1, -1; -1, 0; -1, 1 ]
+
