@@ -42,6 +42,6 @@ module A = struct
 end
 
 let range_seq start stop =
-  let rec next i = if i > stop then None else Some (i, i + 1) in
+  let next i = if i > stop then None else Some (i, i + 1) in
   Seq.unfold next start
 ;;
