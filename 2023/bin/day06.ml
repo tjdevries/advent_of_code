@@ -16,8 +16,7 @@ let () =
   (* let cases = [ 59, 430; 70, 1218; 78, 1213; 78, 1276 ] in *)
   let cases = [ 59707878, 430121812131276 ] in
   let result =
-    List.fold cases ~init:1 ~f:(fun acc item ->
-      let time, distance = item in
+    List.fold cases ~init:1 ~f:(fun acc (time, distance) ->
       let passes = score time distance in
       acc * (Advent.range_seq 1 time |> Seq.filter passes |> Seq.length))
   in
