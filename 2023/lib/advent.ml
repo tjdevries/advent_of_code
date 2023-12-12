@@ -45,3 +45,18 @@ let range_seq start stop =
   let next i = if i > stop then None else Some (i, i + 1) in
   Seq.unfold next start
 ;;
+
+let split_once ch str =
+  let[@ocaml.warning "-8"] [ left; right ] =
+    Stdlib.String.split_on_char ch str
+  in
+  left, right
+;;
+
+module CharMap = Map.Make (Char)
+
+let char_count str =
+  String.to_list str
+  |> List.fold ~init:CharMap.empty ~f:(fun map ch ->
+    Map.set map ~key:ch ~data:((Map.find map ch |> Option.value ~default:0) + 1))
+;;
